@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.Userinter">
+
+	<insert id="insertUser" parameterType="net.inf.Userinf" keyProperty="id" useGeneratedKeys="true">
+		insert into
+		userinf(username,password,regtime,score,uploadsum,downloadsum,userstate,sex,education,profession,phone,mail) values(#{username},#{password},#{regtime},#{score},#{uploadsum},#{downloadsum},#{userstate},#{sex},#{education},#{profession},#{phone},#{mail})
+	</insert>
+
+<!--	<insert id="insertUserbatch" parameterType="arraylist"> 批量插入-->
+<!--		insert into-->
+<!--		userinf(username,password,id,regtime,score,uploadsum,downloadsum,userstate,sex,education,profession,phone,mail) values-->
+<!--		<foreach collection="list" item="item" separator=",">-->
+<!--			(#{item.username},#{item.password},null,#{item.regtime},#{item.score},#{item.uploadsum},#{item.downloadsum},#{item.userstate},#{item.sex},#{item.education},#{item.profession},#{item.phone},#{item.mail})-->
+<!--		</foreach>-->
+
+<!--	</insert>-->
+
+	<delete id="deleteById" parameterType="net.inf.Userinf">
+		delete from userinf where
+		id=#{id}
+	</delete>
+
+	<select id="findById" resultType="net.inf.Userinf">
+		select deptno,dname,loc from dept where 1=1
+
+	</select>
+	<select id="findByusername" parameterType="string" resultType="net.inf.Userinf">
+		select * from userinf where username = #{id}
+	</select>
+	<update id="updateUserstate" parameterType="map">
+		update userinf set userstate=#{state}  where username=#{username}
+	</update>
+
+<!--	<select id="findAll" resultType="net.inf.Userinf" >-->
+<!--		select * from userinf-->
+
+<!--	</select>-->
+
+	<select id="findUserbyonedate" parameterType="string" resultType="net.inf.Userinf" >
+		select * from userinf where regtime=#{id}
+-- 		id可以换成_parameter
+
+
+	</select>
+
+
+	<select id="showAlluser" parameterType="map" resultType="net.inf.Userinf" >
+		select * from userinf
+            <where>
+			<if test="start !=null and start !=''  and end !=null and end !=''">
+				and regtime between #{start} and  #{end}
+			</if>
+
+			<if test="username !=null and username!=''">
+                and username like CONCAT('%','${username}','%')
+			</if>
+            </where>
+        <if test="startpage!=null and startpage!=''">
+            limit ${startpage} , 5
+        </if>
+
+	</select>
+    <select id="userCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM userinf
+        <where>
+            <if test="start !=null and start !=''  and end !=null and end !=''">
+                and regtime between #{start} and  #{end}
+            </if>
+
+            <if test="username !=null and username!=''">
+                and username like CONCAT('%','${username}','%')
+            </if>
+        </where>
+    </select>
+
+
+
+	<select id="findUserbyid"  parameterType="int" resultMap="UserinfMap">
+
+		select u.id uid,u.username,u.score,d.* from userinf u left join deptinf d on u.score=d.deptno
+		where d.deptno=#{id}
+	</select>
+	<select id="findDeptbyid" resultType="Deptinf" parameterType="int">
+		select * from deptinf where deptno=#{id}
+	</select>
+<resultMap id="UserinfMap" type="Userinf">
+<!--	写两条语句的一对一-->
+<!--	<association property="deptinf" column="id" javaType="Deptinf" select="findDeptbyid">-->
+<!--&lt;!&ndash;	property是Userinf里的Deptinf属性-->
+<!--		column → findUserbyid 查询结果的字段名 -->
+<!--		javaType 查询返回结果-->
+<!--&ndash;&gt;-->
+<!--	</association>-->
+<!--	写一条语句的一对一 根据用户ID查部门信息-->
+<!--	<association property="deptinf" column="uid" javaType="Deptinf">-->
+<!--		<result property="deptname" column="deptname"></result>-->
+<!--		<result property="deptno" column="deptno"></result>-->
+<!--		<result property="id" column="id"></result>-->
+<!--	</association>-->
+<!--	写一条语句的一对多→根据部门编号查询该部门下所有员工信息-->
+	<collection property="deptinfs" ofType="Deptinf" javaType="java.util.ArrayList">
+		<id property="id" column="id"></id>
+		<result property="deptname" column="deptname"></result>
+		<result property="deptno" column="deptno"></result>
+<!--		property→属性名-->
+<!--		ofType→集合中每个元素的类-->
+<!--		javaType→属性类型-->
+	</collection>
+
+</resultMap>
+
+
+</mapper>
+	

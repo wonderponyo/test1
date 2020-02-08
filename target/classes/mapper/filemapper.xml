@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.Docinter">
+
+	<insert id="insertFile" parameterType="net.inf.Docinf" keyProperty="id" useGeneratedKeys="true">
+		insert into
+		docinf(docname,docintro,downscore,username,time,doctype,downsum,docstate,doctitle) values(#{docname},#{docintro},#{downscore},#{username},#{time},#{doctype},#{downsum},#{docstate},#{doctitle})
+	</insert>
+	<update id="updatedoctate" parameterType="map">
+		update docinf set docstate=#{state}  where id=#{id}
+	</update>
+	<select id="showAlldoc" parameterType="map" resultType="net.inf.Docinf" >
+		select * from docinf
+		<where>
+			and docstate ='待审核'
+			<if test="start !=null and start !=''  and end !=null and end !=''">
+				and time between #{start} and  #{end}
+			</if>
+
+			<if test="username !=null and username!=''">
+				and username like  CONCAT('%','${username}','%')
+			</if>
+
+			<if test="doctitle !=null and doctitle!=''">
+				and doctitle like CONCAT('%', '#{doctitle}','%')
+			</if>
+
+			<if test="doctype !=null and doctype!=''">
+				and doctype = #{doctype}
+			</if>
+		</where>
+		<if test="startpage!=null and startpage!=''">
+			limit ${startpage} , 5
+		</if>
+
+	</select>
+
+	<select id="docCount" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM docinf
+		<where>
+			and docstate ='待审核'
+			<if test="start !=null and start !=''  and end !=null and end !=''">
+				and regtime between #{start} and  #{end}
+			</if>
+
+			<if test="username !=null and username!=''">
+				and username like  CONCAT('%','${username}','%')
+			</if>
+
+			<if test="doctitle !=null and doctitle!=''">
+				and doctitle like CONCAT('%', '#{doctitle}','%')
+			</if>
+
+			<if test="doctype !=null and doctype!=''">
+				and doctype = #{doctype}
+			</if>
+		</where>
+	</select>
+	<select id="querydocbytitle" parameterType="string" resultType="net.inf.Docinf">
+		SELECT * FROM docinf where doctitle = #{id}
+		</select>
+</mapper>
+	

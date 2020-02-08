@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <typeAliases>
+<!--        包含包下所有类，mapper文件中写类时就不用加包名-->
+        <package name="net.inf"/>
+    </typeAliases>
+
+<!--    <environments default="environment">-->
+<!--        <environment id="environment">-->
+<!--            <transactionManager type="JDBC" />-->
+<!--                <dataSource type="POOLED">-->
+<!--                    <property name="driver" value="com.mysql.cj.jdbc.Driver" />-->
+<!--                    <property name="url" value="jdbc:mysql://localhost:3306/docshare?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8" />-->
+<!--                    <property name="username" value="root" />-->
+<!--                    <property name="password" value="" />-->
+<!--                </dataSource>-->
+<!--        </environment>-->
+<!--    </environments>-->
+
+    <mappers>
+        <mapper resource="mapper/filemapper.xml"/>
+        <mapper resource="mapper/Dept.xml" />
+        <mapper resource="mapper/Logmapper.xml" />
+    </mappers>
+</configuration>

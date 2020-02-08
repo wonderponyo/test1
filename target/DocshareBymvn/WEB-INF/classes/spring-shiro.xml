@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <description> shiro 配置</description>
+
+    <!--1,配置SecurityManager-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+<!--        <property name="cacheManager" ref="cacheManager"/>-->
+
+        <!--把authenticator配置成securityManager的一个属性-->
+        <property name="authenticator" ref="authenticator"></property>
+        <!--配置的realms属性是一个集合 ,ref执行每个集合-->
+        <property name="realms">
+            <list>
+                <ref bean="shiroRealm"></ref>
+
+            </list>
+        </property>
+
+    </bean>
+    <!--2.配置cacheManager-->
+    <bean class="org.apache.shiro.cache.MemoryConstrainedCacheManager">
+
+    </bean>
+
+    <!--3.配置authenticator-->
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy"></bean>
+        </property>
+    </bean>
+
+    <!--4.配置realm -->
+    <bean class="net.Realm.ShiroRealm" id="shiroRealm">
+<!--        设置自定义realm采用的加密算法-->
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+<!--                设置加密算法-->
+                <property name="hashAlgorithmName" value="MD5"></property>
+<!--                设置加密次数-->
+                <property name="hashIterations" value="2"></property>
+<!--                <property name="storedCredentialsHexEncoded" value="true"></property>-->
+            </bean>
+        </property>
+    </bean>
+    <!--5.配置lifecycleBeanPostProcessor 可以自动的来调用配置在Spring IOC 容器中的生命周期方法-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
+    <!--6.启动IOC容器中使用shiro 的注解，但必须配置lifecycleBeanPostProcessor 之后,才能使用-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"></bean>
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"></property>
+    </bean>
+
+    <!--配置shiroFilter-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"></property>
+        <property name="loginUrl" value="/front/fjsp/frontmain.jsp"></property>
+        <!--这里直接用Controller里面跳转到成功界面，所以没设置参数-->
+        <property name="successUrl" value="/front/fjsp/frontmain.jsp"></property>
+        <property name="unauthorizedUrl" value="/"></property>
+        <!-- 配置哪些页面需要受保护. 以及访问这些页面需要的权限.
+       1). anon(anonymous) 可以被匿名访问 2). authc(authentication)
+       必须认证(即登录)后才可能访问的页面. 3). logout 登出.4)等等其他的，没用到 我就不写出来了 -->
+        <property name="filterChainDefinitions">
+            <value>
+                /background/bjs/**=anon
+                /background/bcss/**=anon
+                /front/fjs/**=anon
+                /front/fcss/**=anon
+                /layer/**=anon
+                /layui/**=anon
+                /front/reg.action=anon
+                /front/log.action=anon
+                /login=anon
+                /background/bjsp/backlogin.jsp=anon
+                /front/fjsp/frontmain.jsp=anon
+                #表示其他所有的url都需要认证
+                /** =authc
+            </value>
+        </property>
+    </bean>
+</beans>

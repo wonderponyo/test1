@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<table name="userinf" class="net.inf.Userinf">
+		<property name="username" column="username" order="2"/>
+		<property name="password" column="password" order="1"/>
+        <property name="id" column="id" order="3"/>
+        <property name="regtime" column="regtime" order="4"/>
+        <property name="score" column="score" order="5"/>
+		<property name="uploadsum" column="uploadsum" order="6"/>
+		<property name="downloadsum" column="downloadsum" order="7"/>
+		<property name="userstate" column="userstate" order="8"/>
+	</table>
+</root>
