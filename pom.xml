@@ -20,7 +20,7 @@
     <spring.version>4.3.7.RELEASE</spring.version>
     <aspectjweaver-version>1.8.13</aspectjweaver-version>
     <log4j-version>1.2.16</log4j-version>
-    <shiro.version>1.2.2</shiro.version>
+    <shiro.version>1.8.0</shiro.version>
   </properties>
   <dependencies>
 <!--    shiro-->
